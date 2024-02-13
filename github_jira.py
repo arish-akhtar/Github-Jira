@@ -41,20 +41,24 @@ def createJira():
         "issuetype": {
         "id": "10005"
         },
-        "summary": "JIRA Ticket",
+        "summary": "JIRA Ticket Issued",
     },
     "update": {}
     } )
 
-    response = requests.request(
-    "POST",
-    url,
-    data=payload,
-    headers=headers,
-    auth=auth
-    )
+    request_data = request.json
+    if "comment" in request_data and "/jira" in request_data["comment"]["body"]:
+        response = requests.request(
+        "POST",
+        url,
+        data=payload,
+        headers=headers,
+        auth=auth
+        )
 
-    return json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": "))
+        return json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": "))
+    else:
+        return "No Jira ticket issued."
 
 if __name__ == '__main__':
     app.run('0.0.0.0')

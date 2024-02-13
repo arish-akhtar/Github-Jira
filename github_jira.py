@@ -54,7 +54,7 @@ def createJira():
     auth=auth
     )
 
-    print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+    return json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": "))
 
 if __name__ == '__main__':
     app.run('0.0.0.0')

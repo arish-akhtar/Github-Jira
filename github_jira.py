@@ -1,46 +1,48 @@
 import requests
-import json
-from flask import Flask
-from flask import request
 from requests.auth import HTTPBasicAuth
+import json
+from flask import request
+from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+# Define a route that handles GET requests
+@app.route('/createJira', methods=['POST'])
 def createJira():
-    url = "https://arishakhtar20thapr.atlassian.net//rest/api/3/issue"
 
-    API_TOKEN = ""
+    url = "https://arishakhtar20thapr.atlassian.net/rest/api/3/issue"
+
+    API_TOKEN=""
 
     auth = HTTPBasicAuth("arishakhtar20thapr@gmail.com", API_TOKEN)
 
     headers = {
-    "Accept": "application/json",
-    "Content-Type": "application/json"
+        "Accept": "application/json",
+        "Content-Type": "application/json"
     }
 
     payload = json.dumps( {
-    "fields": {
+        "fields": {
         "description": {
-        "content": [
-            {
             "content": [
                 {
-                "text": "jira ticket",
-                "type": "text"
-                }
-            ],
-            "type": "paragraph"
-            }
-        ],
-        "type": "doc",
-        "version": 1
+                    "content": [
+                        {
+                            "text": "Order entry fails when selecting supplier.",
+                            "type": "text"
+                        }
+                    ],
+                    "type": "paragraph"
+                    }
+                ],
+            "type": "doc",
+             "version": 1
         },
         "project": {
-        "key": "AR"
+           "key": "AR"
         },
         "issuetype": {
-        "id": "10005"
+            "id": "10005"
         },
         "summary": "JIRA Ticket Issued",
     },
@@ -50,16 +52,18 @@ def createJira():
     request_data = request.json
     if "comment" in request_data and "/jira" in request_data["comment"]["body"]:
         response = requests.request(
-        "POST",
-        url,
-        data=payload,
-        headers=headers,
-        auth=auth
+            "POST",
+            url,
+            data=payload,
+            headers=headers,
+            auth=auth
         )
 
         return json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": "))
+    
     else:
-        return "No Jira ticket issued."
+        return "Invalid request body"
+
 
 if __name__ == '__main__':
-    app.run('0.0.0.0')
+    app.run(host='0.0.0.0', port=5000)
